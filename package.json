@@ -1,6 +1,6 @@
 {
   "name": "cocolani-app",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "build": {
     "appId": "cocolani.app",
     "productName": "Cocolani Islands",
@@ -28,14 +28,14 @@
   "author": "",
   "license": "ISC",
   "description": "Desktop Application for the game Cocolani Islands.",
-  "devDependencies": {
-    "electron": "^11.5.0",
-    "electron-builder": "^25.1.8",
-    "electron-updater": "^6.3.9"
-  },
-  "dependencies": {
-    "axios": "^1.7.9",
-    "discord-rpc": "^4.0.1",
-    "dotenv": "^10.0.0"
-  }
+ "devDependencies": {
+  "electron": "^11.5.0",
+  "electron-builder": "^25.1.8"
+},
+"dependencies": {
+  "axios": "^1.7.9",
+  "discord-rpc": "^4.0.1",
+  "dotenv": "^10.0.0",
+  "electron-updater": "^6.3.9"
+}
 }
