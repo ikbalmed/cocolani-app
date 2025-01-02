@@ -1,6 +1,20 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { ipcRenderer } = require('electron');
 
-// Expose the 'openLogin' function to the renderer process
-contextBridge.exposeInMainWorld('electron', {
-  openLogin: () => ipcRenderer.send('open-login')
+window.addEventListener('DOMContentLoaded', () => {
+  const buttonElement = document.getElementById('loc');
+  const usernameElement = document.getElementById('username');
+
+  if (buttonElement && usernameElement) {
+    const username = usernameElement.value;
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'value') {
+          ipcRenderer.send('location-update', username);
+        }
+      });
+    });
+
+    observer.observe(buttonElement, { attributes: true });
+  }
 });

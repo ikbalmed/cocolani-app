@@ -1,41 +1,33 @@
 const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron');
 const { autoUpdater } = require("electron-updater");
+const RPC = require('discord-rpc');
+const axios = require('axios');
 const path = require('path');
 require('dotenv').config();
-const clientId = 'YOUR_DISCORD_CLIENT_ID';
-
-const githubToken = process.env.GITHUB_TOKEN;
+const clientId = '1272682685730521118';
 
 let mainWindow;
 let pluginName;
-
 const rpc = new RPC.Client({ transport: 'ipc' });
+let startTimestamp = new Date();
 
 rpc.on('ready', () => {
   console.log('Discord RPC is ready');
 });
 
-// Initialize the Discord RPC
 rpc.login({ clientId }).catch(console.error);
 
-// Function to update the Discord status
 async function updateDiscordStatus(username) {
   try {
-    // Fetch the location from your Django API
     const response = await axios.get(`http://localhost:8000/get_location/?username=${username}`);
-    
     if (response.data.location) {
       const location = response.data.location;
-
-      // Set the Discord status with the location
       rpc.setActivity({
-        details: 'Cocolani Islands',
-        state: `Location: ${location}`,
-        startTimestamp: new Date(),
-        largeImageKey: 'cocolani_logo',
-        largeImageText: 'Cocolani Islands',
-        smallImageKey: 'user_avatar',
-        smallImageText: location,
+        details: username,
+        state: `${location}`,
+        startTimestamp: startTimestamp,
+        largeImageKey: 'main',
+        largeImageText: "Cocolani Islands",
       });
     } else {
       console.error('No location found');
@@ -96,11 +88,7 @@ function createWindow() {
   });
 
   mainWindow.loadURL('http://localhost:8000/login?next=play');
-
-  mainWindow.webContents.openDevTools = () => {};
-
   mainWindow.setMenuBarVisibility(false);
-
   Menu.setApplicationMenu(null);
 
   mainWindow.webContents.on('did-navigate', (event, newUrl) => {
@@ -116,34 +104,19 @@ function createWindow() {
       });
     }
   });
-
-
-  
 }
 
 function checkForUpdates() {
   autoUpdater.checkForUpdatesAndNotify();
 }
 
-autoUpdater.on('checking-for-update', () => {
-  console.log('Checking for updates...');
-});
-
-autoUpdater.on('update-available', () => {
-  console.log('Update available.');
-});
-
-autoUpdater.on('update-not-available', () => {
-  console.log('No updates available.');
-});
-
+autoUpdater.on('checking-for-update', () => {});
+autoUpdater.on('update-available', () => {});
+autoUpdater.on('update-not-available', () => {});
 autoUpdater.on('error', (err) => {
-  console.error('Error in auto-updater:', err);
   dialog.showErrorBox('Update Error', err == null ? "unknown" : err.stack);
 });
-
 autoUpdater.on('update-downloaded', () => {
-  console.log('Update downloaded.');
   dialog.showMessageBox({
     type: 'info',
     buttons: ['Restart', 'Later'],
@@ -159,6 +132,14 @@ autoUpdater.on('update-downloaded', () => {
 app.whenReady().then(() => {
   checkForUpdates();
   createWindow();
+
+  ipcMain.on('username', (event, username) => {
+    updateDiscordStatus(username);
+  });
+
+  ipcMain.on('location-update', (event, username) => {
+    updateDiscordStatus(username);
+  });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
