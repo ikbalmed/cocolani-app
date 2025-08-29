@@ -37,6 +37,8 @@ async function updateDiscordStatus(username) {
   }
 }
 
+let imageName;
+
 switch (process.platform) {
   case 'win32':
     imageName = 'windows_icon';
@@ -46,6 +48,10 @@ switch (process.platform) {
         pluginName = 'flash/windows/32/pepflashplayer.dll';
         break;
       case 'x64':
+      case 'arm64': // fallback to 64-bit plugin for arm64 builds that run x64 emulation
+        pluginName = 'flash/windows/64/pepflashplayer.dll';
+        break;
+      default:
         pluginName = 'flash/windows/64/pepflashplayer.dll';
         break;
     }
@@ -58,6 +64,10 @@ switch (process.platform) {
         pluginName = 'flash/linux/32/libpepflashplayer.so';
         break;
       case 'x64':
+      case 'arm64':
+        pluginName = 'flash/linux/64/libpepflashplayer.so';
+        break;
+      default:
         pluginName = 'flash/linux/64/libpepflashplayer.so';
         break;
     }
@@ -67,10 +77,20 @@ switch (process.platform) {
     imageName = 'mac_os_icon';
     pluginName = 'flash/mac/PepperFlashPlayer.plugin';
     break;
+  default:
+    pluginName = null;
+    break;
 }
 
+// Resolve Flash plugin path correctly for dev vs packaged builds.
+// In production the assets should be placed via electron-builder extraResources under process.resourcesPath.
+if (pluginName) {
+  const baseDir = app.isPackaged ? process.resourcesPath : __dirname;
+  const flashPluginPath = path.join(baseDir, pluginName);
+  app.commandLine.appendSwitch('ppapi-flash-path', flashPluginPath);
+}
 
-app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, pluginName));
+// Optional: disable HTTP cache (kept from original)
 app.commandLine.appendSwitch("disable-http-cache");
 
 function createWindow() {

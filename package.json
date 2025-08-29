@@ -21,14 +21,15 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder",
-    "publish": "electron-builder --publish always"
+    "dist": "dotenv -e .env -- electron-builder",
+    "publish": "dotenv -e .env -- electron-builder --publish always"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "Desktop Application for the game Cocolani Islands.",
   "devDependencies": {
+    "dotenv-cli": "^10.0.0",
     "electron": "^11.5.0",
     "electron-builder": "^25.1.8"
   },
