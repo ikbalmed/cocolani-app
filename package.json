@@ -1,23 +1,35 @@
 {
   "name": "cocolani-app",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "build": {
-    "appId": "cocolani.app",
-    "productName": "Cocolani Islands",
-    "mac": {
-      "target": "dmg",
-      "icon": "images/applogo.png"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "images/applogo.png"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "medr32",
-      "repo": "cocolani-app"
+  "appId": "cocolani.app",
+  "productName": "Cocolani Islands",
+  "asar": true,
+  "asarUnpack": [
+    "**/pepflashplayer.dll",
+    "**/libpepflashplayer.so",
+    "**/PepperFlashPlayer.plugin"
+  ],
+  "extraResources": [
+    {
+      "from": "flash/",
+      "to": "flash"
     }
+  ],
+  "mac": {
+    "target": "dmg",
+    "icon": "images/applogo.png"
   },
+  "win": {
+    "target": "nsis",
+    "icon": "images/applogo.png"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "medr32",
+    "repo": "cocolani-app"
+  }
+},
   "main": "main.js",
   "scripts": {
     "start": "electron .",
