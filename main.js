@@ -19,7 +19,7 @@ rpc.login({ clientId }).catch(console.error);
 
 async function updateDiscordStatus(username) {
   try {
-    const response = await axios.get(`http://localhost:8000/get_location/?username=${username}`);
+    const response = await axios.get(`http://147.185.221.31:31984/get_location/?username=${username}`);
     if (response.data.location) {
       const location = response.data.location;
       rpc.setActivity({
