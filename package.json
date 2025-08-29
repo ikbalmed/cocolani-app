@@ -1,6 +1,6 @@
 {
   "name": "cocolani-app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "build": {
     "appId": "cocolani.app",
     "productName": "Cocolani Islands",
