@@ -69,6 +69,7 @@ switch (process.platform) {
     break;
 }
 
+
 app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, pluginName));
 app.commandLine.appendSwitch("disable-http-cache");
 
@@ -87,7 +88,7 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL('http://localhost:8000/login?next=play');
+  mainWindow.loadURL('http://147.185.221.31:31984/login?next=play');
   mainWindow.setMenuBarVisibility(false);
   Menu.setApplicationMenu(null);
 
